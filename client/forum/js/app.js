@@ -1,0 +1,1 @@
+var forumApp = angular.module('forumApp', ['ngRoute']);
