@@ -13,6 +13,7 @@ homeApp.config(['$routeProvider', function($routeProvider){
 	})
 	.when('/signup', {
 		templateUrl: 'partials/signup.html'
+		controller: 'signUpController'
 	})
 	.otherwise({
 		redirectTo: '/'

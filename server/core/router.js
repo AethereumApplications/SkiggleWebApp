@@ -1,41 +1,58 @@
 var express = require('express');
-var router = express.Router();
 var path = require('path');
-var mongoClient = require('mongodb').MongoClient;
-var mongoURL = 'mongodb://localhost:27017/skiggleDB';
 
-// Dummy auth code - change when adding sessions
-var authorised = true;
+module.exports = function(app, passport){
 
-var auth = function(req, res, next){
-	if(authorised){
-		next();
+	// static library files - unrestricted access
+	app.use('/lib', express.static(path.join(__dirname + '/../../client/lib')));
+
+	// common assets between angular apps - unrestricted access
+	app.use('/common', express.static(path.join(__dirname + '/../../client/common')));
+
+	// static files for home - unrestricted access
+	app.get('/', isNotLoggedIn, express.static(path.join(__dirname + '/../../client/home')));
+
+	app.post('/signup', passport.authenticate('local-signup', {
+		successRedirect: '/dashboard',
+		failureRedirect: '/',
+		failureFlash: true
+	}));
+
+	app.post('/login', function(req, res){
+		res.send('post to login');
+	});
+
+	app.get('/dashboard', function(){
+		res.send('get to dashboard');
+	});
+
+	app.get('/marketplace', isLoggedIn, function(req, res){
+		res.send('get to marketplace');
+	});
+
+	app.get('/forum', isLoggedIn, function(req, res){
+		res.send('get to forum');
+	});
+
+	app.all('/logout', isLoggedIn, function(req, res){
+		req.logout();
+		res.send('all to logout');
+	});
+
+};
+
+function isLoggedIn(req, res, next){
+	if(req.isAuthenticated()){
+		return next();
 	}else{
-		res.redirect('/#/login');
+		return res.send('not authorised');
 	}
 };
 
-router.use(auth);
-
-router.get('/getUsers', function(req, res){
-	mongoClient.connect(mongoURL, function(err, db){
-		if(err){
-			console.error(err);
-		}else{
-			db.collection('users').find({}, {"_id" : 0, "name" : 1}).toArray(function(err, result){
-				if(err){
-					console.error(err);
-				}else{
-					res.status(200).json(result);
-				}
-				db.close();
-			});
-		}
-	});
-});
-
-router.use('/marketplace', express.static(path.join(__dirname + '/../../client/marketplace')));
-
-router.use('/forum', express.static(path.join(__dirname + '/../../client/forum')));
-
-module.exports = router;
+function isNotLoggedIn(req, res, next){
+	if(req.isAuthenticated()){
+		res.send('redirect to dashboard');
+	}else{
+		return next();
+	}
+};
