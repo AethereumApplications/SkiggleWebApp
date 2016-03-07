@@ -7,7 +7,6 @@ var userSchema = mongoose.Schema({
 	title : String,
 	firstName : String,
 	surname : String,
-	gender : String,
 	DOB : Date,
 	telephoneNo : String,
 	mobileNo : String,
@@ -19,7 +18,7 @@ userSchema.methods.passwordHashGen = function(password){
 };
 
 userSchema.methods.checkValidPassword = function(password) {
-    return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);

@@ -12,7 +12,7 @@ homeApp.config(['$routeProvider', function($routeProvider){
 		templateUrl: 'partials/login.html'
 	})
 	.when('/signup', {
-		templateUrl: 'partials/signup.html'
+		templateUrl: 'partials/signup.html',
 		controller: 'signUpController'
 	})
 	.otherwise({

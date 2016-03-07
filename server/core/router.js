@@ -10,20 +10,22 @@ module.exports = function(app, passport){
 	app.use('/common', express.static(path.join(__dirname + '/../../client/common')));
 
 	// static files for home - unrestricted access
-	app.get('/', isNotLoggedIn, express.static(path.join(__dirname + '/../../client/home')));
+	app.use('/', express.static(path.join(__dirname + '/../../client/home')));
 
 	app.post('/signup', passport.authenticate('local-signup', {
+		successRedirect: '/dashboard',
+		failureRedirect: '/signup',
+		failureFlash: true
+	}));
+
+	app.post('/login', passport.authenticate('local-login', {
 		successRedirect: '/dashboard',
 		failureRedirect: '/',
 		failureFlash: true
 	}));
 
-	app.post('/login', function(req, res){
-		res.send('post to login');
-	});
-
-	app.get('/dashboard', function(){
-		res.send('get to dashboard');
+	app.get('/dashboard', isLoggedIn, function(req, res){
+		res.status(200).send('get to dashboard');
 	});
 
 	app.get('/marketplace', isLoggedIn, function(req, res){
@@ -49,10 +51,10 @@ function isLoggedIn(req, res, next){
 	}
 };
 
-function isNotLoggedIn(req, res, next){
-	if(req.isAuthenticated()){
-		res.send('redirect to dashboard');
-	}else{
-		return next();
-	}
-};
+// function isNotLoggedIn(req, res, next){
+// 	if(req.isAuthenticated()){
+// 		res.send('redirect to dashboard - already auth');
+// 	}else{
+// 		return next();
+// 	}
+// };

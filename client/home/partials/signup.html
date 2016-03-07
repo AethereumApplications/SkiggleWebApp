@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-lg-4 col-lg-offset-4">
-				<form name="signUpForm" class="text-center" ng-submit="registerUser()">
+				<form name="signUpForm" class="text-center" method="post" action="/signup">
 					<div class="row">
 						<br />
 						<h3>Sign up for Skiggle.</h3>
@@ -11,21 +11,21 @@
 					<fieldset>
 						<legend>Account Details</legend>
 						<div class="row">
-							<input class="form-text-input" name="txtEmail" type="email" placeholder="Email Address" required>
+							<input ng-model="user.email" class="form-text-input" name="txtEmail" type="email" placeholder="Email Address" required>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtPassword" type="password" placeholder="Password" required>
+							<input ng-model="user.password" class="form-text-input" name="txtPassword" type="password" placeholder="Password" required>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtConfirmPassword" type="password" placeholder="Confirm Password" required>
+							<input ng-model="user.confirmPassword" class="form-text-input" name="txtConfirmPassword" type="password" placeholder="Confirm Password" required>
 						</div>
 					</fieldset>
 					<br />
 					<fieldset>
 						<legend>Personal Details</legend>
 						<div class="row">
-							<select class="form-select-input" required>
-								<option selected disabled>Title</option>
+							<select ng-model="user.title" name="selTitle" class="form-select-input" required>
+								<option value="" selected disabled>Title</option>
 								<option value="Mr">Mr</option>
 								<option value="Mrs">Mrs</option>
 								<option value="Master">Master</option>
@@ -35,46 +35,38 @@
 							</select>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtFirstName" type="text" placeholder="First Name" required>
+							<input ng-model="user.firstName" class="form-text-input" name="txtFirstName" type="text" placeholder="First Name" required>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtSurname" type="text" placeholder="Surname" required>
-						</div>
-						<div class="row">
-							<select class="form-select-input" required>
-								<option selected disabled>Gender</option>
-								<option value="Male">Male</option>
-								<option value="Female">Female</option>
-								<option value="Other">Other</option>
-							</select>
+							<input ng-model="user.surname" class="form-text-input" name="txtSurname" type="text" placeholder="Surname" required>
 						</div>
 						<div class="row">
 							<span>Date of Birth: </span>
-							<input class="form-date-input form-day-month" name="txtDay" type="number" placeholder="DD" min="1" max="31" required> /
-							<input class="form-date-input form-day-month" name="txtMonth" type="number" placeholder="MM" min="1" max="12" required> /
-							<input class="form-date-input form-year" name="txtYear" type="number" placeholder="YYYY" required>
+							<input ng-model="user.day" class="form-date-input form-day-month" name="txtDay" type="number" placeholder="DD" min="1" max="31" required> /
+							<input ng-model="user.month" class="form-date-input form-day-month" name="txtMonth" type="number" placeholder="MM" min="1" max="12" required> /
+							<input ng-model="user.year" class="form-date-input form-year" name="txtYear" type="number" placeholder="YYYY" required>
 						</div>
 					</fieldset>
 					<br />
 					<fieldset>
 						<legend>Contact Details</legend>
 						<div class="row">
-							<input class="form-text-input" name="txtTelephoneNo" type="text" placeholder="Telephone No." maxlength="20" required>
+							<input ng-model="user.telephoneNo" class="form-text-input" name="txtTelephoneNo" type="text" placeholder="Telephone No." maxlength="20" required>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtMobileNo" type="text" placeholder="Mobile No." maxlength="20" required>
+							<input ng-model="user.mobileNo" class="form-text-input" name="txtMobileNo" type="text" placeholder="Mobile No." maxlength="20" required>
 						</div>
 						<div class="row">
-							<input class="form-text-input" name="txtPostcode" type="text" placeholder="Postcode" maxlength="20" required>
+							<input ng-model="user.postcode" class="form-text-input" name="txtPostcode" type="text" placeholder="Postcode" maxlength="20" required>
 						</div>
 					</fieldset>
 					<div class="row">
-						<input type="checkbox" name="cbxAgree">
+						<input ng-model="agreeTandCs" type="checkbox" name="cbxAgree">
 						<span> I have read and agreed to the T&C's.</span>
 					</div>
 					<div class="row">
 						<br />
-						<input class="form-submit-btn" name="btnSubmit" type="submit" value="Sign Up">
+						<input ng-disabled="!agreeTandCs" class="form-submit-btn" name="btnSubmit" type="submit" value="Sign Up">
 					</div>
 				</form>
 				<div class="row text-center">

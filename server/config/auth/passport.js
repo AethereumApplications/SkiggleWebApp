@@ -11,23 +11,51 @@ module.exports = function(passport) {
     },
     function(req, email, password, done) {
         process.nextTick(function() {
-            User.findOne({'email': email}, function(err, user){
+            User.findOne({"email": email}, function(err, user){
                 if(err){
                     return done(err);
                 }else if(user){
-                    return done(null, false, req.flash('signUpMessage', 'Email address already taken.'));
+                    return done(null, false);
                 }else{
                     var newUser = new User();
                     newUser.email = email;
                     newUser.password = newUser.passwordHashGen(password);
+                    newUser.title = req.body.selTitle;
+                    newUser.firstName = req.body.txtFirstName;
+                    newUser.surname = req.body.txtSurname;
+                    newUser.DOB = new Date(req.body.txtMonth + req.body.txtDay + req.body.txtYear);
+                    newUser.telephoneNo = req.body.txtTelephoneNo;
+                    newUser.mobileNo = req.body.txtMobileNo;
+                    newUser.postcode = req.body.txtPostcode;
                     newUser.save(function(err){
                         if(err){
                             throw err;
-                        }                            
+                        }
                         return done(null, newUser);
                     });
                 }
-            });    
+            });
+        });
+    }));
+
+    passport.use('local-login', new LocalStrategy({
+        usernameField : 'txtEmail',
+        passwordField : 'txtPassword',
+        passReqToCallback : true
+    },
+    function(req, email, password, done) {
+        process.nextTick(function() {
+            User.findOne({"email": email}, function(err, user){
+                if(err){
+                    return done(err);
+                }else if(!user){
+                    return done(null, false);
+                }else if(!user.checkValidPassword(password)){
+                   return done(null, false);
+                }else{
+                    return done(null, user);
+                }
+            });
         });
     }));
 
@@ -36,7 +64,7 @@ module.exports = function(passport) {
     });
 
     passport.deserializeUser(function(id, done) {
-        userModel.findById(id, function(err, user) {
+        User.findById(id, function(err, user) {
             done(err, user);
         });
     });
