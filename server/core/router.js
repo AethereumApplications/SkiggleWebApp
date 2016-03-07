@@ -7,38 +7,39 @@ module.exports = function(app, passport){
 	app.use('/lib', express.static(path.join(__dirname + '/../../client/lib')));
 
 	// common assets between angular apps - unrestricted access
-	app.use('/common', express.static(path.join(__dirname + '/../../client/common')));
+	app.use('/common', express.static(path.join(__dirname + '/../../client/assets/common')));
 
-	// static files for home - unrestricted access
-	app.use('/', express.static(path.join(__dirname + '/../../client/home')));
+	// directory for angular app specific assets - unrestricted access
+	app.use('/assets', express.static(path.join(__dirname + '/../../client/assets')));
 
-	app.post('/signup', passport.authenticate('local-signup', {
-		successRedirect: '/dashboard',
-		failureRedirect: '/signup',
-		failureFlash: true
-	}));
-
-	app.post('/login', passport.authenticate('local-login', {
-		successRedirect: '/dashboard',
-		failureRedirect: '/',
-		failureFlash: true
-	}));
+	// route for home - unrestricted access
+	app.get('/', function(req, res){
+		res.status(200).sendFile(path.join(__dirname + '/../../client/views/home.html'));
+	});
 
 	app.get('/dashboard', isLoggedIn, function(req, res){
-		res.status(200).send('get to dashboard');
+		res.status(200).sendFile(path.join(__dirname + '/../../client/views/dashboard.html'));
 	});
 
 	app.get('/marketplace', isLoggedIn, function(req, res){
-		res.send('get to marketplace');
+		res.status(200).sendFile(path.join(__dirname + '/../../client/views/marketplace.html'));
 	});
 
 	app.get('/forum', isLoggedIn, function(req, res){
-		res.send('get to forum');
+		res.status(200).sendFile(path.join(__dirname + '/../../client/views/forum.html'));
 	});
 
-	app.all('/logout', isLoggedIn, function(req, res){
+	app.post('/signup', passport.authenticate('local-signup', {
+		successRedirect: '/dashboard'
+	}));
+
+	app.post('/login', passport.authenticate('local-login', {
+		successRedirect: '/dashboard'
+	}));
+
+	app.all('/signout', isLoggedIn, function(req, res){
 		req.logout();
-		res.send('all to logout');
+		res.redirect('/');
 	});
 
 };
@@ -47,14 +48,6 @@ function isLoggedIn(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	}else{
-		return res.send('not authorised');
+		return res.redirect('/#/login');
 	}
 };
-
-// function isNotLoggedIn(req, res, next){
-// 	if(req.isAuthenticated()){
-// 		res.send('redirect to dashboard - already auth');
-// 	}else{
-// 		return next();
-// 	}
-// };

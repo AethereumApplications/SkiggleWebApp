@@ -3,17 +3,16 @@ var homeApp = angular.module('homeApp', ['ngRoute']);
 homeApp.config(['$routeProvider', function($routeProvider){
 	$routeProvider
 	.when('/', {
-		templateUrl: 'partials/home.html'
+		templateUrl: 'assets/home/partials/home.html'
 	})
 	.when('/about', {
-		templateUrl: 'partials/about.html'
+		templateUrl: 'assets/home/partials/about.html'
 	})
 	.when('/login', {
-		templateUrl: 'partials/login.html'
+		templateUrl: 'assets/home/partials/login.html'
 	})
 	.when('/signup', {
-		templateUrl: 'partials/signup.html',
-		controller: 'signUpController'
+		templateUrl: 'assets/home/partials/signup.html'
 	})
 	.otherwise({
 		redirectTo: '/'
