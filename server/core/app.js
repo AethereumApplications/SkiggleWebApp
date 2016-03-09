@@ -6,7 +6,6 @@ var router = require('./router');
 var path = require('path');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var flash = require('connect-flash');
 var session = require('express-session');
 var port = process.env.PORT || 3000;
 var app = express();
@@ -31,7 +30,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
 // pass configured app and passport to router
 router(app, passport);

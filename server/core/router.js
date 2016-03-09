@@ -6,14 +6,11 @@ module.exports = function(app, passport){
 	// static library files - unrestricted access
 	app.use('/lib', express.static(path.join(__dirname + '/../../client/lib')));
 
-	// common assets between angular apps - unrestricted access
-	app.use('/common', express.static(path.join(__dirname + '/../../client/assets/common')));
-
-	// directory for angular app specific assets - unrestricted access
+	// directory for angular app specific assets and common assets - unrestricted access
 	app.use('/assets', express.static(path.join(__dirname + '/../../client/assets')));
 
 	// route for home - unrestricted access
-	app.get('/', function(req, res){
+	app.get('/', isNotLoggedIn, function(req, res){
 		res.status(200).sendFile(path.join(__dirname + '/../../client/views/home.html'));
 	});
 
@@ -39,7 +36,7 @@ module.exports = function(app, passport){
 
 	app.all('/signout', isLoggedIn, function(req, res){
 		req.logout();
-		res.redirect('/');
+		res.status(302).redirect('/');
 	});
 
 };
@@ -48,6 +45,14 @@ function isLoggedIn(req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	}else{
-		return res.redirect('/#/login');
+		return res.status(302).redirect('/#/login');
+	}
+};
+
+function isNotLoggedIn(req, res, next){
+	if(req.isAuthenticated()){
+		return res.status(302).redirect('/dashboard');
+	}else{
+		return next();
 	}
 };
